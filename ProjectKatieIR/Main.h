@@ -2,12 +2,10 @@
 #include "opencv2/opencv.hpp"
 #include <iostream>
 #include <string>
- class Main
+class Main
 {
- public:
+public:
 	Main();
 	~Main();
 	void runCam();
-	 void getLeds(cv::Mat&img);
-	 void labelBlobs(cv::Mat img);
- };
+};

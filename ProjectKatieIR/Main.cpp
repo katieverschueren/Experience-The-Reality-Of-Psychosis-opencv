@@ -14,7 +14,7 @@ int main(int, char**)
 {
 	Main main;
 	main.runCam();
-	
+
 }
 
 void Main::runCam()
@@ -30,11 +30,12 @@ void Main::runCam()
 	cv::Mat grayFrame;
 	cv::Mat thresholdImage;
 
+	LedLabeler ledLabeler;
 
 	cv::namedWindow("Feed", 1);
 	for (;;)
 	{
-		
+
 		cap >> frame; // get a new frame from camera
 		imshow("Feed", frame);
 		//std::cout << frame.type() << std::endl;
@@ -48,9 +49,9 @@ void Main::runCam()
 
 		threshold(grayFrame, thresholdImage, 250, 1, 0);  // alles boven de 250 als pixel waarde maak je een 1 van.
 
-		LedLabeler::getLeds(thresholdImage);
+		ledLabeler.getLeds(thresholdImage);
 		//getLeds(thresholdImage);
-		imshow("threshold", thresholdImage*255);
+		imshow("threshold", thresholdImage * 255);
 		if (cv::waitKey(1) >= 0) break;
 	}
 	// the camera will be deinitialized automatically in VideoCapture destructor

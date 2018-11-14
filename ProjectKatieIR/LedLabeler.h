@@ -7,20 +7,51 @@ public:
 	cv::Point2d centerPixel;
 };
 
+class BlobInfo
+{
+public:
+	std::vector<cv::Point> contour;
+	cv::Rect rect;
+	int area;
+	cv::Point center;
+	int index;
+
+	BlobInfo(std::vector<cv::Point> Contour, cv::Rect Rect, int Area, cv::Point Center, int Index)
+	{
+		contour = Contour;
+		rect = Rect;
+		area = Area;
+		center = Center;
+		index = Index;
+	}
+};
+
+
 
 class LedLabeler
 {
 public:
-	
-	static std::vector<LedClass> LEDList;
-	static cv::Point LeftLed;
-	static cv::Point MiddleLed;
-	static cv::Point RightLed;
+
+	std::vector<LedClass> LEDList;
+	std::vector<BlobInfo> blobList;
+
+	std::vector<std::vector<BlobInfo>> possibleLeds;
+
+	cv::Point LeftLed;
+	cv::Point MiddleLed;
+	cv::Point RightLed;
+
+	bool ledsFound = false;
 
 
-	static void getLeds(cv::Mat & img);
+	void getLeds(cv::Mat & img);
 
 private:
-	static void lableLeds(cv::Mat & img);
+	void lableBlobs(cv::Mat & img);
+	void checkColinear(cv::Mat & img);
+	bool calculateDistance(cv::Point point1, cv::Point point2, cv::Point point3);
+	void blobAreaFilter();
+	void drawBoxes(Rect rect, cv::Mat& img);
+	void drawCircles(cv::Point middle, cv::Mat& img);
 };
 
