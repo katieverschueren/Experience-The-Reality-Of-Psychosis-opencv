@@ -5,7 +5,7 @@
 void LedLabeler::getLeds(cv::Mat &img)
 {
 	blobList.clear();
-	img.convertTo(img, CV_16S);
+	/*img.convertTo(img, CV_16S);
 	cv::Mat blobs = cv::Mat::zeros(img.rows, img.cols, img.type());
 	std::vector<cv::Point2d *> firstpixelVec2;
 	std::vector<cv::Point2d *> posVec2;
@@ -15,7 +15,7 @@ void LedLabeler::getLeds(cv::Mat &img)
 	if (img.data == NULL)
 		return;
 	labelBLOBsInfo(img, blobs, firstpixelVec2, posVec2, areaVec2);
-	img.convertTo(img, CV_8U);
+	img.convertTo(img, CV_8U);*/
 
 	lableBlobs(img);
 
@@ -23,24 +23,24 @@ void LedLabeler::getLeds(cv::Mat &img)
 
 void LedLabeler::lableBlobs(cv::Mat & img)
 {
-	std::vector<std::vector<cv::Point> > contour;
+	std::vector<std::vector<cv::Point> > contour; 
 	cv::findContours(img, contour, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
 	//cv::Mat singleLeds = cv::Mat(img.rows, img.cols, 16, Scalar(255, 255, 255));
 
-	std::cout << contour.size() << std::endl;
+	std::cout << contour.size() << std::endl;	//std::cout is printen wat er binnen de << staat
 
 	for (int i = 0; i < contour.size(); i++)
 	{
 
-		Rect rect = boundingRect(contour[i]);
+		Rect rect = boundingRect(contour[i]); // vraag de boundingbox van elke contour op. 
 
 		drawBoxes(rect, img);
 
 		Point blobMiddle;
 		blobMiddle.x = (rect.x + rect.width) - (rect.width / 2);
-		blobMiddle.y = (rect.y + rect.height) - (rect.height / 2);
+		blobMiddle.y = (rect.y + rect.height) - (rect.height / 2);  //pak het midden van het vierkant
 
-		drawCircles(blobMiddle, img);
+		drawCircles(blobMiddle, img); 
 
 		//BlobInfo blob = ;
 
@@ -54,9 +54,8 @@ void LedLabeler::lableBlobs(cv::Mat & img)
 
 
 
-void LedLabeler::checkColinear(cv::Mat &img)
+void LedLabeler::checkColinear(cv::Mat &img)	// colinear is dat punten door de zelfde lijn gaan.
 {
-	float smallestSlope = 5;
 
 	cv::Point point1;
 	cv::Point point2;
@@ -111,11 +110,6 @@ void LedLabeler::checkColinear(cv::Mat &img)
 		}
 	}
 
-	std::cout << "slope index" << slopeIndex << std::endl;
-	std::cout << "smallest Slope difference =" << smallestSlope << std::endl;
-	cv::line(img, point1, point3, Scalar(255, 255, 255), 2);
-
-	std::cout << "----------------------------------------------------------\n\n" << std::endl;
 }
 
 
@@ -127,10 +121,12 @@ bool LedLabeler::calculateDistance(cv::Point point1, cv::Point point2, cv::Point
 	lenght1_2 = sqrt(((point1.y - point2.y) * (point1.y - point2.y)) + ((point1.x - point2.x)* (point1.x - point2.x)));
 	lenght2_3 = sqrt(((point2.y - point3.y) * (point2.y - point3.y)) + ((point2.x - point3.x)* (point2.x - point3.x)));
 
-	float difference = lenght1_2 - lenght2_3;
+	//float difference = lenght1_2 - lenght2_3;
+
+	float sum = lenght1_2 + lenght2_3;
 
 
-	if (difference < difference + 0.1 && difference > difference - 0.1)
+	if (lenght1_2 < sum/2 + 0.1 && lenght1_2 > sum - 0.1)
 		return true;
 
 	return false;
@@ -175,5 +171,5 @@ void LedLabeler::drawBoxes(Rect rect, cv::Mat & img)
 void LedLabeler::drawCircles(cv::Point middle, cv::Mat&img)
 {
 
-	cv::circle(img, middle, 4, Scalar(0, 0, 255), -1);
+	cv::circle(img, middle, 4, Scalar(0, 0, 0), -1);
 }

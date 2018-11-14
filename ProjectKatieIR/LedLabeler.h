@@ -1,16 +1,16 @@
 #pragma once
 #include "avansvisionlib.h"
 
-class LedClass
-{
-public:
-	cv::Point2d centerPixel;
-};
+//class LedClass
+//{
+//public:
+//	cv::Point2d centerPixel;
+//};
 
 class BlobInfo
 {
 public:
-	std::vector<cv::Point> contour;
+	std::vector<cv::Point> contour; // eigen contour punten lijst
 	cv::Rect rect;
 	int area;
 	cv::Point center;
@@ -32,16 +32,16 @@ class LedLabeler
 {
 public:
 
-	std::vector<LedClass> LEDList;
-	std::vector<BlobInfo> blobList;
+	//std::vector<LedClass> LEDList;
+	std::vector<BlobInfo> blobList;   //lijst met blobs 
 
-	std::vector<std::vector<BlobInfo>> possibleLeds;
+	//std::vector<std::vector<BlobInfo>> possibleLeds;
 
-	cv::Point LeftLed;
-	cv::Point MiddleLed;
-	cv::Point RightLed;
+	//cv::Point LeftLed;
+	//cv::Point MiddleLed;
+	//cv::Point RightLed;
 
-	bool ledsFound = false;
+	//bool ledsFound = false;
 
 
 	void getLeds(cv::Mat & img);
