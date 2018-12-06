@@ -1,10 +1,12 @@
 ﻿#include "LedLabeler.h"
 #include <opencv2/shape/hist_cost.hpp>
 #include <valarray>
+#include "LedPairTestFill.h"
 
-void LedLabeler::getLeds(cv::Mat &img)
+std::vector<LedPair> LedLabeler::getLeds(cv::Mat &img)
 {
 	blobList.clear();
+	ledPairs.clear();
 	/*img.convertTo(img, CV_16S);
 	cv::Mat blobs = cv::Mat::zeros(img.rows, img.cols, img.type());
 	std::vector<cv::Point2d *> firstpixelVec2;
@@ -17,44 +19,48 @@ void LedLabeler::getLeds(cv::Mat &img)
 	labelBLOBsInfo(img, blobs, firstpixelVec2, posVec2, areaVec2);
 	img.convertTo(img, CV_8U);*/
 
-	lableBlobs(img);
+	return lableBlobs(img);
 
 }
 
-void LedLabeler::lableBlobs(cv::Mat & img)
+std::vector<LedPair> LedLabeler::lableBlobs(cv::Mat & img)
 {
 	std::vector<std::vector<cv::Point> > contour; 
 	cv::findContours(img, contour, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
 	//cv::Mat singleLeds = cv::Mat(img.rows, img.cols, 16, Scalar(255, 255, 255));
 
-	std::cout << contour.size() << std::endl;	//std::cout is printen wat er binnen de << staat
+	//std::cout << contour.size() << std::endl;	//std::cout is printen wat er binnen de << staat
 
 	for (int i = 0; i < contour.size(); i++)
 	{
-
-		Rect rect = boundingRect(contour[i]); // vraag de boundingbox van elke contour op. 
+		cv::Rect rect = boundingRect(contour[i]); // vraag de boundingbox van elke contour op. 
 
 		drawBoxes(rect, img);
 
-		Point blobMiddle;
-		blobMiddle.x = (rect.x + rect.width) - (rect.width / 2);
-		blobMiddle.y = (rect.y + rect.height) - (rect.height / 2);  //pak het midden van het vierkant
+		cv::Point blobMiddle = CenterOffMass(contour[i]); // pak het werkelijke midden van de blob.
+
+		
 
 		drawCircles(blobMiddle, img); 
 
 		//BlobInfo blob = ;
-
-		blobList.push_back(BlobInfo(contour[i], rect, rect.area(), blobMiddle, i));
+		if(blobMiddle.x >= 0 && blobMiddle.y >= 0)
+			blobList.push_back(BlobInfo(contour[i], rect, rect.area(), blobMiddle, i));
 	}
 
-	checkColinear(img);
+	return checkColinear(img);
 	//cv::imshow("debugCircles", singleLeds);
 }
 
+cv::Point LedLabeler::CenterOffMass(std::vector<cv::Point> contour) // berken het midden van de blob
+{
+	cv::Moments moment = cv::moments(contour, true);
+	return cv::Point(moment.m10 / moment.m00, moment.m01 / moment.m00);
+
+}
 
 
-
-void LedLabeler::checkColinear(cv::Mat &img)	// colinear is dat punten door de zelfde lijn gaan.
+std::vector<LedPair> LedLabeler::checkColinear(cv::Mat &img)	// colinear is dat punten door de zelfde lijn gaan.
 {
 
 	cv::Point point1;
@@ -94,13 +100,19 @@ void LedLabeler::checkColinear(cv::Mat &img)	// colinear is dat punten door de z
 						slopeDifference = slopeDifference * -1;
 
 
-					if (slopeDifference > 0 && slopeDifference < 0.025)
+					if (slopeDifference > 0 && slopeDifference < 0.1)
 					{
 						if (calculateDistance(blobList[i].center, blobList[ii].center, blobList[iii].center))
 						{
-
-							cv::line(img, blobList[i].center, blobList[ii].center, Scalar(255, 255, 255), 2);
-							cv::line(img, blobList[ii].center, blobList[iii].center, Scalar(255, 255, 255), 2);
+							ledPairs.push_back(LedPair(
+								blobList[i].center,
+								blobList[ii].center,
+								blobList[iii].center,
+								slopeDifference,
+								calculateDistance(blobList[i].center, blobList[ii].center),
+								calculateDistance(blobList[ii].center, blobList[iii].center)));
+							//cv::line(img, blobList[i].center, blobList[ii].center, Scalar(255, 255, 255), 2);
+							//cv::line(img, blobList[ii].center, blobList[iii].center, Scalar(255, 255, 255), 2);
 						}
 					}
 
@@ -110,8 +122,92 @@ void LedLabeler::checkColinear(cv::Mat &img)	// colinear is dat punten door de z
 		}
 	}
 
+
+	return removeDuplicates();
+
 }
 
+struct myclass {
+	bool operator() (cv::Point pt1, cv::Point pt2) {
+		if (pt1.y < pt2.y)
+			return true;
+		if (pt1.y == pt2.y)
+			if (pt1.x < pt2.x)
+				return true;
+			else
+				return false;
+		else
+			return  false;
+
+	}
+} mySort;
+
+bool inList(cv::Point point1, cv::Point point2, cv::Point point3, std::vector<std::vector<cv::Point>>& PointsOnly)
+{
+	vector<cv::Point> points;
+	points.push_back(point1);
+	points.push_back(point2);
+	points.push_back(point3);
+
+	std::sort(points.begin(), points.end(), mySort);
+
+	if(PointsOnly.size() > 0)
+	{
+		for( int i = 0; i < PointsOnly.size(); i++)
+		{
+			if(PointsOnly[i] == points)
+			{
+				return false;
+			}
+		}
+	}
+	return true; 
+}
+
+
+
+std::vector<LedPair> LedLabeler::removeDuplicates()
+{
+	if (ledPairs.size() == 0)
+		return ledPairs;
+
+	
+		vector<LedPair> ledPairsNoduplicates;
+		std::vector<std::vector<cv::Point>> PointsOnly;
+	if (ledPairs.size() < 1000)
+	{
+		std::vector<cv::Point> points;
+		ledPairsNoduplicates.push_back(ledPairs[0]);
+		points.push_back(ledPairs[0].LED1);
+		points.push_back(ledPairs[0].LED2);
+		points.push_back(ledPairs[0].LED3);
+		PointsOnly.push_back(points);
+		std::sort(PointsOnly[0].begin(), PointsOnly[0].end(), mySort);
+
+		for (int i = 0; i < ledPairs.size(); i++)
+		{
+			if (inList(ledPairs[i].LED1, ledPairs[i].LED2, ledPairs[i].LED3, PointsOnly))
+			{
+				ledPairsNoduplicates.push_back(ledPairs[i]);
+				points.clear();
+				points.push_back(ledPairs[i].LED1);
+				points.push_back(ledPairs[i].LED2);
+				points.push_back(ledPairs[i].LED3);
+				PointsOnly.push_back(points);
+				std::sort(PointsOnly[PointsOnly.size() - 1].begin(), PointsOnly[PointsOnly.size() - 1].end(), mySort);
+			}
+		}
+	}
+	return ledPairsNoduplicates;
+}
+
+
+
+
+float LedLabeler::calculateDistance(cv::Point point1, cv::Point point2)
+{
+	return sqrt(((point1.y - point2.y) * (point1.y - point2.y)) + ((point1.x - point2.x)* (point1.x - point2.x)));
+}
 
 bool LedLabeler::calculateDistance(cv::Point point1, cv::Point point2, cv::Point point3)
 {
@@ -126,7 +222,7 @@ bool LedLabeler::calculateDistance(cv::Point point1, cv::Point point2, cv::Point
 	float sum = lenght1_2 + lenght2_3;
 
 
-	if (lenght1_2 < sum/2 + 0.1 && lenght1_2 > sum - 0.1)
+	if (lenght1_2 < sum/2 + 300 && lenght1_2 > sum - 300)
 		return true;
 
 	return false;
@@ -156,9 +252,9 @@ bool LedLabeler::calculateDistance(cv::Point point1, cv::Point point2, cv::Point
 
 
 
-void LedLabeler::drawBoxes(Rect rect, cv::Mat & img)
+void LedLabeler::drawBoxes(cv::Rect rect, cv::Mat & img)
 {
-	Point pt1, pt2;
+	cv::Point pt1, pt2;
 	pt1.x = rect.x;
 	pt1.y = rect.y;
 	pt2.x = rect.x + rect.width;
@@ -171,5 +267,5 @@ void LedLabeler::drawBoxes(Rect rect, cv::Mat & img)
 void LedLabeler::drawCircles(cv::Point middle, cv::Mat&img)
 {
 
-	cv::circle(img, middle, 4, Scalar(0, 0, 0), -1);
+	cv::circle(img, middle, 4, cv::Scalar(0, 0, 0), -1);
 }

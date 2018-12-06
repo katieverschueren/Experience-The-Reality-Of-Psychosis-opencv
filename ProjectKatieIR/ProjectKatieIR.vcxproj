@@ -125,12 +125,21 @@
   <ItemGroup>
     <ClCompile Include="avansvisionlib.cpp" />
     <ClCompile Include="LedLabeler.cpp" />
+    <ClCompile Include="LedMovementTest.cpp" />
+    <ClCompile Include="LedPairTestFill.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PipeCommunication.cpp" />
+    <ClCompile Include="RecognizerLogic.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="avansvisionlib.h" />
     <ClInclude Include="LedLabeler.h" />
+    <ClInclude Include="LedMovementTest.h" />
+    <ClInclude Include="LedPair.h" />
+    <ClInclude Include="LedPairTestFill.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="PipeCommunication.h" />
+    <ClInclude Include="RecognizerLogic.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

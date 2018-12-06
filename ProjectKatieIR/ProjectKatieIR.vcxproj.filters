@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\TestClasses">
+      <UniqueIdentifier>{bb914dd7-3316-4638-a707-4c91c4983eff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\TestHeaders">
+      <UniqueIdentifier>{250c93f8-91e3-42ad-89dc-1ed04c43d10c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -24,6 +30,18 @@
     <ClCompile Include="LedLabeler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RecognizerLogic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LedPairTestFill.cpp">
+      <Filter>Source Files\TestClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="LedMovementTest.cpp">
+      <Filter>Source Files\TestClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="PipeCommunication.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main.h">
@@ -33,6 +51,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LedLabeler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RecognizerLogic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LedPair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LedPairTestFill.h">
+      <Filter>Header Files\TestHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="LedMovementTest.h">
+      <Filter>Header Files\TestHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="PipeCommunication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

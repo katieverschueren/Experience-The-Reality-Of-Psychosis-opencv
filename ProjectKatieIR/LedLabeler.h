@@ -1,5 +1,7 @@
 #pragma once
 #include "avansvisionlib.h"
+#include <vector>
+#include "LedPair.h"
 
 //class LedClass
 //{
@@ -15,6 +17,8 @@ public:
 	int area;
 	cv::Point center;
 	int index;
+
+	
 
 	BlobInfo(std::vector<cv::Point> Contour, cv::Rect Rect, int Area, cv::Point Center, int Index)
 	{
@@ -34,7 +38,7 @@ public:
 
 	//std::vector<LedClass> LEDList;
 	std::vector<BlobInfo> blobList;   //lijst met blobs 
-
+	std::vector<LedPair> ledPairs;
 	//std::vector<std::vector<BlobInfo>> possibleLeds;
 
 	//cv::Point LeftLed;
@@ -44,14 +48,17 @@ public:
 	//bool ledsFound = false;
 
 
-	void getLeds(cv::Mat & img);
+	std::vector<LedPair> getLeds(cv::Mat & img);
 
 private:
-	void lableBlobs(cv::Mat & img);
-	void checkColinear(cv::Mat & img);
+	std::vector<LedPair> lableBlobs(cv::Mat & img);
+	cv::Point CenterOffMass(std::vector<cv::Point> contour);
+	std::vector<LedPair> checkColinear(cv::Mat & img);
+	std::vector<LedPair> removeDuplicates();
+	float calculateDistance(cv::Point point1, cv::Point point2);
 	bool calculateDistance(cv::Point point1, cv::Point point2, cv::Point point3);
 	void blobAreaFilter();
-	void drawBoxes(Rect rect, cv::Mat& img);
+	void drawBoxes(cv::Rect rect, cv::Mat& img);
 	void drawCircles(cv::Point middle, cv::Mat& img);
 };
 
