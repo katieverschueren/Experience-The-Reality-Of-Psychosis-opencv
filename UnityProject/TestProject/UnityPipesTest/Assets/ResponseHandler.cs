@@ -65,7 +65,7 @@ public class ResponseHandler : MonoBehaviour {
 
     // Update is called once per framevect
     void Update () {
-        if (ledBar != null)
+        if (ledBar.Leds.Count > 0)
         {
             led1.transform.position = new Vector3(ledBar.Leds[0].X, 480 - ledBar.Leds[0].Y, 0);
             led2.transform.position = new Vector3(ledBar.Leds[1].X, 480 - ledBar.Leds[1].Y, 0);
