@@ -100,21 +100,31 @@ std::vector<LedPair> LedLabeler::checkColinear(cv::Mat &img)	// colinear is dat 
 						slopeDifference = slopeDifference * -1;
 
 
-					if (slopeDifference > 0 && slopeDifference < 0.1)
-					{
-						if (calculateDistance(blobList[i].center, blobList[ii].center, blobList[iii].center))
-						{
-							ledPairs.push_back(LedPair(
-								blobList[i].center,
-								blobList[ii].center,
-								blobList[iii].center,
-								slopeDifference,
-								calculateDistance(blobList[i].center, blobList[ii].center),
-								calculateDistance(blobList[ii].center, blobList[iii].center)));
-							//cv::line(img, blobList[i].center, blobList[ii].center, Scalar(255, 255, 255), 2);
-							//cv::line(img, blobList[ii].center, blobList[iii].center, Scalar(255, 255, 255), 2);
-						}
-					}
+					ledPairs.push_back(LedPair(
+						blobList[i].center,
+						blobList[ii].center,
+						blobList[iii].center,
+						slopeDifference,
+						calculateDistance(blobList[i].center, blobList[ii].center),
+						calculateDistance(blobList[ii].center, blobList[iii].center)));
+
+
+					//if (slopeDifference > 0 && slopeDifference < 0.5)
+					//{
+					//	if (calculateDistance(blobList[i].center, blobList[ii].center, blobList[iii].center))
+					//	{
+					//		// hierzo
+					//		ledPairs.push_back(LedPair(
+					//			blobList[i].center,
+					//			blobList[ii].center,
+					//			blobList[iii].center,
+					//			slopeDifference,
+					//			calculateDistance(blobList[i].center, blobList[ii].center),
+					//			calculateDistance(blobList[ii].center, blobList[iii].center)));
+					//		//cv::line(img, blobList[i].center, blobList[ii].center, Scalar(255, 255, 255), 2);
+					//		//cv::line(img, blobList[ii].center, blobList[iii].center, Scalar(255, 255, 255), 2);
+					//	}
+					//}
 
 
 				}

@@ -29,22 +29,23 @@ PipeCommunication::PipeCommunication()
 
 void PipeCommunication::sendViaPipe(LedPair leds)
 {
-	std::string message = "{ \"Leds\": [";
-	message += "{\"X\": "+ std::to_string(leds.LED1.x)+",";
-	message += "\"Y\": " + std::to_string(leds.LED1.y) + "},";
-	message += "{\"X\": " + std::to_string(leds.LED2.x) + ",";
-	message += "\"Y\": " + std::to_string(leds.LED2.y) + "},";
-	message += "{\"X\": " + std::to_string(leds.LED3.x) + ",";
-	message += "\"Y\": " + std::to_string(leds.LED3.y) + "}]}\n";
+		std::string message = "{ \"Leds\": [";
+		message += "{\"X\": " + std::to_string(leds.LED1.x) + ",";
+		message += "\"Y\": " + std::to_string(leds.LED1.y) + "},";
+		message += "{\"X\": " + std::to_string(leds.LED2.x) + ",";
+		message += "\"Y\": " + std::to_string(leds.LED2.y) + "},";
+		message += "{\"X\": " + std::to_string(leds.LED3.x) + ",";
+		message += "\"Y\": " + std::to_string(leds.LED3.y) + "}]}\n";
 
 
-	//message = "Hello\n";
+		//message = "Hello\n";
 
-	WriteFile(hPipe,
-		message.c_str(),
-		message.size(),   // = length of string + terminating '\0' !!!
-		&dwWritten,
-		NULL);
+		WriteFile(hPipe,
+			message.c_str(),
+			message.size(),   // = length of string + terminating '\0' !!!
+			&dwWritten,
+			NULL);
+
 }
 
 void PipeCommunication::closeConnection()

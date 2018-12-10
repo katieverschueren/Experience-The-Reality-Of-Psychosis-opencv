@@ -16,6 +16,7 @@ public:
 	static bool goingUp;
 	static bool goingRight;
 	static LedPair updateLeds();
+	static LedPair updateLedsArrows();
 	static void moveLeds(int x, int y, LedPair& led_pair);
 	static void init (int distanceBetweenLeds);
 	static LedPair mainLedPair;

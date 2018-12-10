@@ -1,5 +1,7 @@
 #include "LedMovementTest.h"
 #include <iostream>
+#include <windows.h>
+#include <conio.h>
 
 LedPair LedMovementTest::mainLedPair = LedPair(cv::Point(minX, minY), cv::Point(minX, minY), cv::Point(minX, minY), 0, minX, minX);
 int LedMovementTest::skipIndex = 0;
@@ -71,6 +73,42 @@ LedPair LedMovementTest::updateLeds()
 		return mainLedPair;
 	}
 	skipIndex++;
+}
+
+
+LedPair LedMovementTest::updateLedsArrows()
+{
+	
+	char key = _getch();
+	int asciiValue = key;
+
+	std::cout << "key pressed: " << asciiValue << std::endl;
+	if (asciiValue == 97) //a
+	{
+		mainLedPair.LED1.x -= 1;
+		mainLedPair.LED2.x -= 1;
+		mainLedPair.LED3.x -= 1;
+	}
+	if (asciiValue == 115) //s
+	{
+		mainLedPair.LED1.y += 1;
+		mainLedPair.LED2.y += 1;
+		mainLedPair.LED3.y += 1;
+	}
+	if (asciiValue == 100) //d
+	{
+		mainLedPair.LED1.x += 1;
+		mainLedPair.LED2.x += 1;
+		mainLedPair.LED3.x += 1;
+	}
+	if (asciiValue == 119) //w
+	{
+		mainLedPair.LED1.y -= 1;
+		mainLedPair.LED2.y -= 1;
+		mainLedPair.LED3.y -= 1;
+	}
+
+	return mainLedPair;
 }
 
 void LedMovementTest::moveLeds(int x, int y, LedPair & led_pair)
