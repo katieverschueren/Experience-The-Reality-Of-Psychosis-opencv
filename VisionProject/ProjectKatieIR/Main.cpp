@@ -72,7 +72,7 @@ void Main::runCam()
 
 	for (;;)
 	{
-
+		StartCounter();
 		//cap >> frame; // get a new frame from camera
 		if (!cap.VideoCapture::read(frame))
 			return;
@@ -99,8 +99,6 @@ void Main::runCam()
 			std::vector<LedPair> ledList = ledLabeler.getLeds(thresholdImage);
 
 
-			std::cout << "number of blob pairs: " << ledList.size() << std::endl;
-
 			if(ledList.size() > 0)
 				pipeCom.sendViaPipe(ledList[0]);
 
@@ -113,7 +111,7 @@ void Main::runCam()
 
 		cv::imshow("threshold", thresholdImage * 255);
 
-
+		std::cout << "fps is: " << 1 / (GetCounter() / 1000) << std::endl;
 		if (cv::waitKey(1) >= 0) break;
 	}
 	// the camera will be deinitialized automatically in VideoCapture destructor
