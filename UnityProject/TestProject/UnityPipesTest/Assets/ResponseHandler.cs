@@ -8,9 +8,7 @@ public class ResponseHandler : MonoBehaviour {
     // Use this for initialization
     LedBar ledPositions;
 
-    public GameObject led1;
-    public GameObject led2;
-    public GameObject led3;
+
 
     public LedBar ledBar;
 
@@ -22,11 +20,16 @@ public class ResponseHandler : MonoBehaviour {
     float dataMaxX = 640;
     float dataMaxY = 480;
 
+    public DistanceHandler distanceHandler;
+    public HeadRotationHandler headRotationHandler;
+
+    private float movementSpeed = 0;
+
 
     // camera x = (((324 - 316)/640) * data) + 316;
     // camera y = (((244 - 236)/480) * data) + 236;
 
-    Vector3 calculateCameraPosition(float x, float y)
+    Vector3 calculateCameraPosition(float x, float y, LedBar bar)
     {
         x = dataMaxX - x;
 
@@ -34,11 +37,33 @@ public class ResponseHandler : MonoBehaviour {
         float cameraY = (((cameraMaxY - cameraMinY) / dataMaxY) * y) + cameraMinY;
 
 
+        float cameraDistance = distanceHandler.calculateDistance(bar);
+        headRotationHandler.calculateHeadRotation(bar);
+        Vector3 cameraPos = new Vector3(cameraX, cameraY, cameraDistance);
+
+        float mainCameraX = Camera.main.transform.position.x;
+        float mainCameraY = Camera.main.transform.position.y;
+
+        float maxJumpThreshold = 0.5f;
 
 
-        Vector3 cameraPos = new Vector3(cameraX, cameraY, 0);
-        Debug.Log(cameraPos);
-        return cameraPos;
+
+
+        // keep speed in check and check if it does not jump to much. 
+        // without speed you lose the camera tracking
+
+        if (cameraPos.x < mainCameraX + maxJumpThreshold && cameraPos.x > mainCameraX - maxJumpThreshold)
+        {
+            if (cameraPos.y < mainCameraY + maxJumpThreshold && cameraPos.y > mainCameraY - maxJumpThreshold)
+            {
+               // Debug.Log(cameraPos);
+                return cameraPos;
+            }
+        }
+
+      //  return cameraPos;
+
+        return Camera.main.transform.position;
     }
 
 	void Start () {
@@ -54,23 +79,27 @@ public class ResponseHandler : MonoBehaviour {
     public void setLedBar(LedBar bar)
     {
         ledBar = bar;
-        led1.transform.position = new Vector3(ledBar.Leds[0].X, 480 - ledBar.Leds[0].Y, 0);
-        led2.transform.position = new Vector3(ledBar.Leds[1].X, 480 - ledBar.Leds[1].Y, 0);
-        led3.transform.position = new Vector3(ledBar.Leds[2].X, 480 - ledBar.Leds[2].Y, 0);
 
-        Vector3 lerp = Vector3.Lerp(Camera.main.transform.position, calculateCameraPosition(ledBar.Leds[1].X, 480 - ledBar.Leds[1].Y), 0);
-
-        Camera.main.transform.position = lerp;
+        
+         //@todo calculate position based on all three leds not just the first one.
+        
     }
 
     // Update is called once per framevect
     void Update () {
         if (ledBar.Leds.Count > 0)
         {
-            led1.transform.position = new Vector3(ledBar.Leds[0].X, 480 - ledBar.Leds[0].Y, 0);
-            led2.transform.position = new Vector3(ledBar.Leds[1].X, 480 - ledBar.Leds[1].Y, 0);
-            led3.transform.position = new Vector3(ledBar.Leds[2].X, 480 - ledBar.Leds[2].Y, 0);
-            Camera.main.transform.position = calculateCameraPosition(ledBar.Leds[1].X, 480 - ledBar.Leds[1].Y);
+          
+
+            Vector3 lerp = Vector3.Lerp(Camera.main.transform.position, calculateCameraPosition(ledBar.Leds[1].X, 480 - ledBar.Leds[1].Y, ledBar), 1);
+
+            Camera.main.transform.position = lerp;
+
+
+
+
+
+            //Camera.main.transform.position = calculateCameraPosition(ledBar.Leds[1].X, 480 - ledBar.Leds[1].Y);
         }
     }
 

@@ -43,7 +43,7 @@ int main(int, char**)
 
 void Main::runCam()
 {
-	cv::VideoCapture cap(1); // open the default camera
+	cv::VideoCapture cap(0); // open the default camera
 
 	if (!cap.isOpened())  // check if we succeeded
 		return; // exit program

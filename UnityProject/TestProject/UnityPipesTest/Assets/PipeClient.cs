@@ -126,7 +126,6 @@ public class PipeClient : MonoBehaviour {
              if (messageFrom.Length > 0)
              {
                 onResponse(messageFrom);
-                Debug.Log(1/ deltaTime);
                 deltaTime = 0;
              }
             Thread.Sleep(1);
