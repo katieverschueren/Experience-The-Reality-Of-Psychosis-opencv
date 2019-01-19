@@ -1,7 +1,9 @@
 /*
-  SD card read/write
+  SD card file dump
 
- This example shows how to read and write data to and from an SD card file
+ This example shows how to read a file from the SD card using the
+ SD library and send it over the serial port.
+
  The circuit:
  * SD card attached to SPI bus as follows:
  ** MOSI - pin 11
@@ -9,8 +11,8 @@
  ** CLK - pin 13
  ** CS - pin 4 (for MKRZero SD: SDCARD_SS_PIN)
 
- created   Nov 2010
- by David A. Mellis
+ created  22 December 2010
+ by Limor Fried
  modified 9 Apr 2012
  by Tom Igoe
 
@@ -21,7 +23,7 @@
 #include <SPI.h>
 #include <SD.h>
 
-File myFile;
+const int chipSelect = 10;
 
 void setup() {
   // Open serial communications and wait for port to open:
@@ -29,49 +31,37 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-  digitalWrite(10, OUTPUT);
+
 
   Serial.print("Initializing SD card...");
 
-  if (!SD.begin(10)) {
-    Serial.println("initialization failed!");
-    while (1);
+  // see if the card is present and can be initialized:
+  if (!SD.begin(chipSelect)) {
+    Serial.println("Card failed, or not present");
+    // don't do anything more:
+    return;
   }
-  Serial.println("initialization done.");
+  Serial.println("card initialized.");
 
   // open the file. note that only one file can be open at a time,
   // so you have to close this one before opening another.
-  myFile = SD.open("test.txt", FILE_WRITE);
+  File dataFile = SD.open("test1.wav");
 
-  // if the file opened okay, write to it:
-  if (myFile) {
-    Serial.print("Writing to test.txt...");
-    myFile.println("testing 1, 2, 3.");
-    // close the file:
-    myFile.close();
-    Serial.println("done.");
-  } else {
-    // if the file didn't open, print an error:
-    Serial.println("error opening test.txt");
-  }
-
-  // re-open the file for reading:
-  myFile = SD.open("test.txt");
-  if (myFile) {
-    Serial.println("test.txt:");
-
-    // read from the file until there's nothing else in it:
-    while (myFile.available()) {
-      Serial.write(myFile.read());
+  // if the file is available, write to it:
+  if (dataFile) {
+    while (dataFile.available()) {
+      PORTD = dataFile.read();
+      for(int i=0; i < 68; i++)
+        __asm("nop");
     }
-    // close the file:
-    myFile.close();
-  } else {
-    // if the file didn't open, print an error:
-    Serial.println("error opening test.txt");
+    dataFile.close();
+  }
+  // if the file isn't open, pop up an error:
+  else {
+    Serial.println("error opening test.wav");
   }
 }
 
 void loop() {
-  // nothing happens after setup
 }
+
