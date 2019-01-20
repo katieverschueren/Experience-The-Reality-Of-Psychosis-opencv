@@ -14,6 +14,7 @@ PipeCommunication::PipeCommunication()
 		NULL);
 
 	std::cout << "###---- Waiting for Unity to connect-----####" << std::endl;
+	std::cout << "###---- Dont forget to change webcam focus!!!!!!-----####" << std::endl;
 	while (hPipe != INVALID_HANDLE_VALUE)
 	{
 		if (ConnectNamedPipe(hPipe, NULL) != FALSE)   // wait for someone to connect to the pipe

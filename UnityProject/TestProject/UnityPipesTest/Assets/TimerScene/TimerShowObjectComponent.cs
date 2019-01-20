@@ -40,6 +40,8 @@ public class TimerShowObjectComponent : MonoBehaviour {
             obj.GetComponent<MeshRenderer>().enabled = enable;
         if (obj.GetComponent<SkinnedMeshRenderer>() != null)
             obj.GetComponent<SkinnedMeshRenderer>().enabled = enable;
+        if (obj.GetComponent<Light>() != null)
+            obj.GetComponent<Light>().enabled = enable;
 
         foreach (Transform child in obj.transform)
         {

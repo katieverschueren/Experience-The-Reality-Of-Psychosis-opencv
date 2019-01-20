@@ -6,8 +6,8 @@ using UnityEngine;
 public class ArduinoSoundHandler : MonoBehaviour {
 
 	// Use this for initialization
-    private string ip = "192.168.178.20/";
-    private string port = "80/";
+    public string ip = "192.168.178.20/";
+    public string port = "80/";
 
     void Start () {
 		

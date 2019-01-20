@@ -11,11 +11,12 @@ public class ResponseHandler : MonoBehaviour {
 
 
     public LedBar ledBar;
+    public Camera camera;
 
-    float cameraMaxX = 324;
-    float cameraMinX = 316;
-    float cameraMaxY = 244;
-    float cameraMinY = 236;
+    float cameraMaxX = 0.5f;
+    float cameraMinX = -0.5f;
+    float cameraMaxY = 0.5f;
+    float cameraMinY = -0.5f;
 
     float dataMaxX = 640;
     float dataMaxY = 480;
@@ -41,10 +42,10 @@ public class ResponseHandler : MonoBehaviour {
         headRotationHandler.calculateHeadRotation(bar);
         Vector3 cameraPos = new Vector3(cameraX, cameraY, cameraDistance);
 
-        float mainCameraX = Camera.main.transform.position.x;
-        float mainCameraY = Camera.main.transform.position.y;
+        float mainCameraX = camera.transform.localPosition.x;
+        float mainCameraY = camera.transform.localPosition.y;
 
-        float maxJumpThreshold = 0.5f;
+        float maxJumpThreshold = 0.1f;
 
 
 
@@ -63,7 +64,7 @@ public class ResponseHandler : MonoBehaviour {
 
       //  return cameraPos;
 
-        return Camera.main.transform.position;
+        return camera.transform.localPosition;
     }
 
 	void Start () {
@@ -91,9 +92,9 @@ public class ResponseHandler : MonoBehaviour {
         {
           
 
-            Vector3 lerp = Vector3.Lerp(Camera.main.transform.position, calculateCameraPosition(ledBar.Leds[1].X, 480 - ledBar.Leds[1].Y, ledBar), 1);
+            Vector3 lerp = Vector3.Lerp(camera.transform.localPosition, calculateCameraPosition(ledBar.Leds[1].X, 480 - ledBar.Leds[1].Y, ledBar), 1);
 
-            Camera.main.transform.position = lerp;
+            camera.transform.localPosition = lerp;
 
 
 

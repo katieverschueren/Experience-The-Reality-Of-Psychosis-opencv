@@ -8,23 +8,30 @@ public class TimerController : MonoBehaviour {
     public delegate void OnSecondElapsed(int runTime);
     public static event OnSecondElapsed secondElapsed;
 
-    private int totalTime = 0;
+    private static int totalTime = 0;
     float deltaTime = 0;
 
-    void Start()
+    public static bool started = false;
+
+
+    public static void startScene()
     {
         secondElapsed(totalTime);
+        started = true;
     }
 	
 	// Update is called once per frame
 	void Update ()
 	{
-	    deltaTime += Time.deltaTime;
-	    if (deltaTime >= 1)
+	    if (started)
 	    {
-	        deltaTime = 0;
-	        totalTime++;
-	        secondElapsed(totalTime);
+	        deltaTime += Time.deltaTime;
+	        if (deltaTime >= 1)
+	        {
+	            deltaTime = 0;
+	            totalTime++;
+	            secondElapsed(totalTime);
+	        }
 	    }
 	}
 }

@@ -13,8 +13,8 @@ public class DistanceHandler : MonoBehaviour {
     private float closesedRealDistance = 20;
     private float furthestRealDistance = 180;
 
-    private float closesedCameraDistance = 0;
-    private float furthesCameraDistance = -7;
+    private float closesedCameraDistance = 0.5f;
+    private float furthesCameraDistance = -0.5f;
 
     public Text debugText;
 
@@ -30,13 +30,25 @@ public class DistanceHandler : MonoBehaviour {
           
         float distance = (ledBarSize * focalLenght) / (distanceOneToTwo + distanceTwoToThree);
 
-        Debug.Log("distance from camera to head is: " +  distance + "CM");
+        //Debug.Log("distance from camera to head is: " +  distance + "CM");
         
-        debugText.text = "Distance to head is: " + distance.ToString("0.##") + "cm";
+       // debugText.text = "Distance to head is: " + distance.ToString("0.##") + "cm";
 
 
-        return -(distance * 0.0375f);
+        return toCameraDistance(distance);
     }
+
+    float toCameraDistance(float distance)
+    {
+        float normalisedDistance = distance - 20;
+        float percentage = normalisedDistance / (furthestRealDistance - 20);
+
+        float cameraDistance = closesedCameraDistance - percentage;
+
+
+        return cameraDistance;
+    }
+
 
     float calculateDistanceBetweenLeds(Led led1, Led led2)
     {
