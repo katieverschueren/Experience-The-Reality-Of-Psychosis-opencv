@@ -69,7 +69,8 @@ public class ResponseHandler : MonoBehaviour {
 
 	void Start () {
         PipeClient.onResponse += PipeClient_onResponse;
-	}
+	    Cursor.visible = false;
+    }
 
     private void PipeClient_onResponse(string response)
     {

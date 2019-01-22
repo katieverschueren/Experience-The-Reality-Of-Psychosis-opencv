@@ -37,7 +37,16 @@ void setupMP3()
    mp3.begin(9600); 
    delay(100);
    SelectPlayerDevice(0x02);       // Select SD card as the player device.
+   delay(1000);
    SetVolume(0x19);           // Set the volume, the range is 0x00 to 0x1E.
+   delay(1000);
+   SpecifyMusicPlay(1);
+   delay(1000);
+   SetVolume(0x19); 
+   delay(1000);
+   PlayPause();
+   delay(1000);
+
    Serial.println("Audio setup");
 }
 

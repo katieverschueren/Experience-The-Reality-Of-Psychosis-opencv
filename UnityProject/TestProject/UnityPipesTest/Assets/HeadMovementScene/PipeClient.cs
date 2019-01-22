@@ -86,6 +86,7 @@ public class PipeClient : MonoBehaviour
     void Initialise()
     {
         //Starting the pipe
+        ASH.startSound();
         Debug.LogFormat("[IPC] Creating new ClientStream. Pipe name: {0}", pipeName);
         stream = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut);
 
@@ -116,7 +117,7 @@ public class PipeClient : MonoBehaviour
 
         interProc = new Thread(Listen);
         interProc.Start();
-        ASH.startSound();
+        
 
     }
     void Listen()
